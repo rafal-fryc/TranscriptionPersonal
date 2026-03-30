@@ -1,6 +1,3 @@
-import torch
-from pyannote.audio import Pipeline as PyannotePipeline
-
 from pipeline.models import Segment
 
 
@@ -14,6 +11,9 @@ class SpeakerDiarizer:
     """
 
     def __init__(self, hf_token: str) -> None:
+        import torch
+        from pyannote.audio import Pipeline as PyannotePipeline
+
         self.pipeline = PyannotePipeline.from_pretrained(
             "pyannote/speaker-diarization-3.1",
             use_auth_token=hf_token,
@@ -38,6 +38,8 @@ class SpeakerDiarizer:
 
     def unload(self) -> None:
         """Free GPU memory for sequential model loading."""
+        import torch
+
         del self.pipeline
         if torch.cuda.is_available():
             torch.cuda.empty_cache()

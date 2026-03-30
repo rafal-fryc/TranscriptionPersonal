@@ -1,8 +1,6 @@
 from pathlib import Path
 
-import torch
 import soundfile as sf
-from nemo.collections.speechlm2.models import SALM
 
 from pipeline.audio import extract_segment, chunk_audio
 from pipeline.models import Segment
@@ -15,6 +13,8 @@ class ASRTranscriber:
     """
 
     def __init__(self) -> None:
+        from nemo.collections.speechlm2.models import SALM  # noqa: PLC0415
+
         self.model = SALM.from_pretrained("nvidia/canary-qwen-2.5b")
 
     def transcribe_file(self, audio_path: str) -> str:
@@ -52,6 +52,8 @@ class ASRTranscriber:
 
     def unload(self) -> None:
         """Free GPU memory for sequential model loading."""
+        import torch
+
         del self.model
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
